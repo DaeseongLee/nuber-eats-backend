@@ -8,17 +8,17 @@ import { Repository } from "typeorm";
 export class UserService {
     constructor(@InjectRepository(User) private readonly users: Repository<User>) { }
 
-    async createAccount({ email, password, role }: CreateAccountInput) {
+    async createAccount({ email, password, role }: CreateAccountInput): Promise<[boolean, string?]> {
         try {
             const exists = await this.users.findOne({ email });
             if (exists) {
-                return;
+                return [false, 'There is user with that email already'];
             }
             await this.users.save(this.users.create({ email, password, role }));
-            return true;
+            return [true];
+
         } catch (error) {
-            console.error(error);
-            return false;
+            return [false, "Couldn't create account"];
         }
     }
 }
