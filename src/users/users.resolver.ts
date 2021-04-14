@@ -7,7 +7,8 @@ import { LoginOutput, LoginInput } from './dtos/login.dto';
 
 @Resolver(of => User)
 export class UserResolver {
-    constructor(private readonly usersService: UserService) { }
+    constructor(private readonly usersService: UserService) {
+    }
 
     @Query(returns => Boolean)
     hi() {
@@ -42,4 +43,7 @@ export class UserResolver {
             }
         }
     }
+
+    @Query(returns => User)
+    me() { }
 }
