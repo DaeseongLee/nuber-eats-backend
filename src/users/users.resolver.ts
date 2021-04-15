@@ -3,7 +3,7 @@ import { EditProfileInput, EditProfileOutput } from './dtos/edit-profile.dto';
 import { UserProfileInput, UserProfileOutput } from './dtos/user-profile.dto';
 import { AuthGuard } from './../auth/auth.guard';
 import { User } from './entities/user.entity';
-import { Resolver, Query, Mutation, Args, Context } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { UserService } from './users.service';
 import { CreateAccountInput, CreateAccountOutput } from './dtos/create-account.dto';
 import { LoginOutput, LoginInput } from './dtos/login.dto';
@@ -18,31 +18,12 @@ export class UserResolver {
 
     @Mutation(returns => CreateAccountOutput)
     async createAccount(@Args('input') createAccountInput: CreateAccountInput): Promise<CreateAccountOutput> {
-        try {
-            const [ok, error] = await this.usersService.createAccount(createAccountInput);
-            return {
-                ok,
-                error
-            }
-        } catch (error) {
-            return {
-                ok: false,
-                error
-            }
-        }
+        return this.usersService.createAccount(createAccountInput);
     }
 
     @Mutation(returns => LoginOutput)
     async login(@Args('input') loginInput: LoginInput): Promise<LoginOutput> {
-        try {
-            return await this.usersService.login(loginInput);
-
-        } catch (error) {
-            return {
-                ok: false,
-                error,
-            }
-        }
+        return this.usersService.login(loginInput);
     }
 
     @Query(returns => User)
@@ -54,20 +35,7 @@ export class UserResolver {
     @UseGuards(AuthGuard)
     @Query(returns => UserProfileOutput)
     async userProfile(@Args() userProfileInput: UserProfileInput): Promise<UserProfileOutput> {
-        try {
-            const user = await this.usersService.findById(userProfileInput.userId);
-            if (!user) throw new Error();
-            return {
-                ok: true,
-                user
-            }
-        } catch (error) {
-            console.error(error);
-            return {
-                error: 'User Not Found',
-                ok: false
-            }
-        }
+        return this.usersService.findById(userProfileInput.userId);
     }
 
     @UseGuards(AuthGuard)
@@ -76,31 +44,11 @@ export class UserResolver {
         @AuthUser() authUser: User,
         @Args('input') editProfileInput: EditProfileInput,
     ): Promise<EditProfileOutput> {
-        try {
-            await this.usersService.editProfile(authUser.id, editProfileInput);
-            return {
-                ok: true,
-            }
-        } catch (error) {
-            return {
-                ok: false,
-                error,
-            }
-        }
+        return this.usersService.editProfile(authUser.id, editProfileInput);
     }
 
     @Mutation(returns => VerifyEmailOutput)
     async verifyEmail(@Args('input') { code }: VerifyEmailInput): Promise<VerifyEmailOutput> {
-        try {
-            await this.usersService.verifyEmail(code);
-            return {
-                ok: true,
-            }
-        } catch (error) {
-            return {
-                ok: false,
-                error
-            }
-        }
+        return this.usersService.verifyEmail(code);
     }
 }
