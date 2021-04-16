@@ -1,3 +1,4 @@
+import { MailService } from './../mail/mail.service';
 import { JwtService } from './../jwt/jwt.service';
 import { LoginInput, LoginOutput } from './dtos/login.dto';
 import { CreateAccountInput, CreateAccountOutput } from './dtos/create-account.dto';
@@ -15,6 +16,7 @@ export class UserService {
     constructor(@InjectRepository(User) private readonly users: Repository<User>,
         @InjectRepository(Verification) private readonly verifications: Repository<Verification>,
         private readonly jwtService: JwtService,
+        private readonly mailService: MailService,
     ) { }
 
     async createAccount({ email, password, role }: CreateAccountInput): Promise<CreateAccountOutput> {
@@ -24,9 +26,9 @@ export class UserService {
                 return { ok: false, error: 'There is user with that email already' };
             }
             const user = await this.users.save(this.users.create({ email, password, role }));
-            await this.verifications.save(this.verifications.create({ user, }))
+            const verification = await this.verifications.save(this.verifications.create({ user, }));
+            this.mailService.sendVerificationEmail(user.email, verification.code);
             return { ok: true };
-
         } catch (error) {
             return { ok: false, error: "Couldn't create account" };
         }
@@ -52,9 +54,7 @@ export class UserService {
                     error: 'Wrong password',
                 }
             }
-            console.log('loginUser', user);
             const token = this.jwtService.sign(user.id);
-            console.log('token', token);
             return {
                 ok: true,
                 token,
@@ -92,7 +92,8 @@ export class UserService {
                 user.email = email;
                 user.verified = false;
                 await this.verifications.delete({ user: { id: user.id } });
-                await this.verifications.save(this.verifications.create({ user }));
+                const verification = await this.verifications.save(this.verifications.create({ user }));
+                this.mailService.sendVerificationEmail(user.email, verification.code);
             }
             if (password) {
                 user.password = password;
