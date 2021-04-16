@@ -91,6 +91,7 @@ export class UserService {
             if (email) {
                 user.email = email;
                 user.verified = false;
+                await this.verifications.delete({ user: { id: user.id } });
                 await this.verifications.save(this.verifications.create({ user }));
             }
             if (password) {
@@ -119,7 +120,8 @@ export class UserService {
             );
             if (verification) {
                 verification.user.verified = true;
-                this.users.save(verification.user);
+                await this.users.save(verification.user);
+                await this.verifications.delete(verification.id);
                 return {
                     ok: true,
                 }
