@@ -47,7 +47,6 @@ export class UserService {
                 }
             }
             const passwordCorrect = await user.checkPassword(password);
-
             if (!passwordCorrect) {
                 return {
                     ok: false,
@@ -62,7 +61,7 @@ export class UserService {
         } catch (error) {
             return {
                 ok: false,
-                error,
+                error: "Couldn't login",
             }
         }
     }
