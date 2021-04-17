@@ -132,7 +132,7 @@ export class UserService {
             console.error(error);
             return {
                 ok: false,
-                error
+                error: 'Could not verify email.',
             }
         }
     }
