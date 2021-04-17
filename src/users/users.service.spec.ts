@@ -117,7 +117,7 @@ describe('UserService', () => {
             expect(result).toEqual({ ok: true });
         });
         it('should fail on exception', async () => {
-            usersRepository.findOne.mockRejectedValue(new Error());
+            usersRepository.findOne.mockRejectedValue(new Error('testError'));
             const result = await service.createAccount(createAccountArgs);
             expect(result).toEqual({ ok: false, error: "Couldn't create account" });
         });
@@ -164,7 +164,7 @@ describe('UserService', () => {
         });
 
         it('should fail on exception', async () => {
-            usersRepository.findOne.mockRejectedValue(new Error());
+            usersRepository.findOne.mockRejectedValue(new Error('testError'));
             const result = await service.login(loginArgs);
             expect(result).toEqual({ ok: false, error: "Couldn't login" });
         });
@@ -181,7 +181,7 @@ describe('UserService', () => {
         });
 
         it('should fail if no user is found', async () => {
-            usersRepository.findOneOrFail.mockRejectedValue(new Error());
+            usersRepository.findOneOrFail.mockRejectedValue(new Error('testError'));
             const result = await service.findById(1);
             expect(result).toEqual({ ok: false, error: 'User Not Found' });
         });
@@ -250,6 +250,7 @@ describe('UserService', () => {
             expect(result).toEqual({ ok: false, error: 'Could not update profile.', });
         });
     });
+
     describe('verifyEmail', () => {
         it('should verify email', async () => {
             const mockedVerification = {
