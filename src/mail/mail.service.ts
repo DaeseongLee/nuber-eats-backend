@@ -16,7 +16,6 @@ export class MailService {
         form.append('template', template);
         emailVars.forEach(eVar => form.append(`v:${eVar.key}`, eVar.value));
 
-        console.log('Form!!!', form);
         try {
             await got(
                 `https://api.mailgun.net/v3/${this.options.domain}/messages`,
