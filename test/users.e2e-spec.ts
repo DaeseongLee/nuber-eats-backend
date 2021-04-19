@@ -232,6 +232,7 @@ describe('UserModule (e2e)', () => {
     });
   });
 
+
   describe('me', () => {
     it('should find my profile', () => {
       return request(app.getHttpServer())
@@ -280,7 +281,6 @@ describe('UserModule (e2e)', () => {
         });
     });
   });
-
   it.todo('verifyEmail');
   it.todo('editProfile');
 
