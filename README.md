@@ -18,4 +18,11 @@ The Backend of Nuber Eats Clone
 - Log In
 - See Profile
 - Edit Profile
-- Verify Email
+- Verify Email   
+
+## Restaurant Model
+
+- name
+- category
+- address
+- coverImage
