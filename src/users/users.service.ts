@@ -101,7 +101,6 @@ export class UserService {
             };
 
         } catch (error) {
-            console.error(error);
             return {
                 ok: false,
                 error: 'Could not update profile.',
@@ -129,7 +128,6 @@ export class UserService {
                 error: 'Verification not found.'
             }
         } catch (error) {
-            console.error(error);
             return {
                 ok: false,
                 error: 'Could not verify email.',
