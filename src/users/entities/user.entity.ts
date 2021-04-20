@@ -5,10 +5,10 @@ import { CoreEntity } from "src/common/entities/core.entity";
 import { Column, Entity, BeforeInsert, BeforeUpdate, OneToMany } from "typeorm";
 import * as bcrypt from "bcrypt";
 import { IsBoolean, IsEmail, IsEnum, IsString } from 'class-validator';
-enum UserRole {
-    Client,
-    Owner,
-    Delivery,
+export enum UserRole {
+    Client = 'Client',
+    Owner = 'Owner',
+    Delivery = 'Delivery',
 }
 
 registerEnumType(UserRole, { name: 'UserRole' });
