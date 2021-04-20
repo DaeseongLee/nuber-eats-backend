@@ -10,6 +10,7 @@ import { CreateRestaurantInput, CreateRestaurantOutput } from './dtos/create-res
 import { Restaurant } from './entities/restaurant.entity';
 import { Role } from 'src/auth/role.decorator';
 import { AllCategoriesOutput } from './dtos/all-categories.dto';
+import { RestaurantInput, RestaurantOutput } from './dtos/restaurant.dto';
 
 @Resolver(of => Restaurant)
 export class RestaurantResolver {
@@ -36,6 +37,11 @@ export class RestaurantResolver {
     @Role(['Owner'])
     deleteRestaurant(@AuthUser() owner: User, @Args('input') deleteRestaurantInput: DeleteRestaurantInput): Promise<DeleteRestaurantOutput> {
         return this.restaurantService.deleteRestaurant(owner, deleteRestaurantInput);
+    }
+
+    @Query(returns => RestaurantOutput)
+    restaurant(@Args('input') restaurantInput: RestaurantInput): Promise<RestaurantOutput> {
+        return this.restaurantService.allRestaurants(restaurantInput);
     }
 }
 

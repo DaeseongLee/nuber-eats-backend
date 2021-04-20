@@ -10,6 +10,7 @@ import { Repository } from "typeorm";
 import { Restaurant } from "./entities/restaurant.entity";
 import { AllCategoriesOutput } from './dtos/all-categories.dto';
 import { CategoryInput, CategoryOutput } from './dtos/category.dto';
+import { RestaurantInput, RestaurantOutput } from './dtos/restaurant.dto';
 
 @Injectable()
 export class RestaurantService {
@@ -141,7 +142,6 @@ export class RestaurantService {
                     error: 'Category Not Found',
                 };
             };
-            console.log('category', category);
             const restaurants = await this.restaurants.find(
                 {
                     where: { category },
@@ -149,18 +149,38 @@ export class RestaurantService {
                     skip: (page - 1) * 25
                 },
             )
-            category.restaurants = restaurants;
             const totalResults = await this.countRestaurants(category);
-            console.log('totalResults', totalResults / 25);
             return {
                 ok: true,
                 category,
+                restaurants,
                 totalPages: Math.ceil(totalResults / 25)
             };
         } catch (error) {
             return {
                 ok: false,
                 error: "Could not load category",
+            }
+        }
+    }
+
+    async allRestaurants({ page }: RestaurantInput): Promise<RestaurantOutput> {
+        try {
+            const [restaurants, count] = await this.restaurants.findAndCount({
+                skip: (page - 1) * 25,
+                take: 25,
+            });
+            console.log("restaurants", restaurants);
+            return {
+                ok: true,
+                results: restaurants,
+                totalPages: Math.ceil(count / 25),
+                totalResults: count,
+            }
+        } catch (error) {
+            return {
+                ok: false,
+                error: 'Could not load restaurants',
             }
         }
     }
