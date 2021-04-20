@@ -1,3 +1,4 @@
+import { RestaurantsModule } from './restraurants/restraunt.module';
 import { Category } from './restraurants/entities/category.entity';
 import { Restaurant } from './restraurants/entities/restaurant.entity';
 import { Verification } from './users/entities/verification.entity';
@@ -60,6 +61,7 @@ import { MailModule } from './mail/mail.module';
       fromEmail: process.env.MAILGUN_FROM_EMAIL,
     }),
     UsersModule,
+    RestaurantsModule,
   ],
   controllers: [],
   providers: [],
