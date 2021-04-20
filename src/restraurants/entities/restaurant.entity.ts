@@ -3,7 +3,7 @@ import { Category } from './category.entity';
 import { CoreEntity } from './../../common/entities/core.entity';
 import { Field, ObjectType, InputType } from "@nestjs/graphql";
 import { IsString, Length } from "class-validator";
-import { Column, Entity, ManyToOne } from "typeorm";
+import { Column, Entity, ManyToOne, RelationId } from "typeorm";
 
 @InputType('RestaurantInputType', { isAbstract: true })
 @ObjectType() //graphQL decorator
@@ -20,7 +20,7 @@ export class Restaurant extends CoreEntity {
     @IsString()
     coverImg: string;
 
-    @Field(type => String, { defaultValue: 'GangNam' })
+    @Field(type => String)
     @Column()
     @IsString()
     address: string;
@@ -39,5 +39,8 @@ export class Restaurant extends CoreEntity {
         { onDelete: 'CASCADE' },
     )
     owner: User;
+
+    @RelationId((restaurant: Restaurant) => restaurant.owner)
+    ownerId: number;
 
 }
