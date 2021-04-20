@@ -1,3 +1,4 @@
+import { CategoryOutput, CategoryInput } from './dtos/category.dto';
 import { Category } from './entities/category.entity';
 import { DeleteRestaurantOutput, DeleteRestaurantInput } from './dtos/delete-restaurant.dto';
 import { EditRestaurantOutput, EditRestaurantInput } from './dtos/edit-restaurant.dto';
@@ -50,5 +51,10 @@ export class CategoryResolover {
     @Query(type => AllCategoriesOutput)
     allCategories(): Promise<AllCategoriesOutput> {
         return this.restaurantService.allCategories();
+    }
+
+    @Query(type => CategoryOutput)
+    category(@Args('input') categoryInput: CategoryInput): Promise<CategoryOutput> {
+        return this.restaurantService.findCategoryBySlug(categoryInput);
     }
 }

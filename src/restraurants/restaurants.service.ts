@@ -9,6 +9,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Restaurant } from "./entities/restaurant.entity";
 import { AllCategoriesOutput } from './dtos/all-categories.dto';
+import { CategoryInput, CategoryOutput } from './dtos/category.dto';
 
 @Injectable()
 export class RestaurantService {
@@ -127,7 +128,40 @@ export class RestaurantService {
         }
     }
 
-    async countRestaurants(category: Category): Promise<Number> {
+    countRestaurants(category: Category) {
         return this.restaurants.count({ category });
+    }
+
+    async findCategoryBySlug({ slug, page }: CategoryInput): Promise<CategoryOutput> {
+        try {
+            const category = await this.categories.findOne({ slug });
+            if (!category) {
+                return {
+                    ok: false,
+                    error: 'Category Not Found',
+                };
+            };
+            console.log('category', category);
+            const restaurants = await this.restaurants.find(
+                {
+                    where: { category },
+                    take: 25,
+                    skip: (page - 1) * 25
+                },
+            )
+            category.restaurants = restaurants;
+            const totalResults = await this.countRestaurants(category);
+            console.log('totalResults', totalResults / 25);
+            return {
+                ok: true,
+                category,
+                totalPages: Math.ceil(totalResults / 25)
+            };
+        } catch (error) {
+            return {
+                ok: false,
+                error: "Could not load category",
+            }
+        }
     }
 }
