@@ -18,8 +18,6 @@ export class OrderResolver {
     async createOrder(@AuthUser() customer: User,
         @Args('input') createOrderInput: CreateOrderInput
     ): Promise<CreateOrderOutput> {
-        return {
-            ok: true,
-        }
+        return this.orderService.createOrder(customer, createOrderInput);
     }
 }
