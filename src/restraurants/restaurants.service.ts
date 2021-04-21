@@ -7,12 +7,13 @@ import { User } from 'src/users/entities/user.entity';
 import { CreateRestaurantInput, CreateRestaurantOutput } from './dtos/create-restaurant.dto';
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Like, Repository } from "typeorm";
+import { Like, Raw, Repository } from "typeorm";
 import { Restaurant } from "./entities/restaurant.entity";
 import { AllCategoriesOutput } from './dtos/all-categories.dto';
 import { CategoryInput, CategoryOutput } from './dtos/category.dto';
 import { RestaurantsInput, RestaurantsOutput } from './dtos/restaurants.dto';
 import { RestaurantInput, RestaurantOutput } from './dtos/restaurant.dto';
+import { RestaurantRepository } from './repositories/restaurant.repository';
 
 @Injectable()
 export class RestaurantService {
@@ -21,6 +22,8 @@ export class RestaurantService {
         private readonly restaurants: Repository<Restaurant>,
         @InjectRepository(Category)
         private readonly categories: CategoryRepository,
+        @InjectRepository(Restaurant)
+        private readonly pagedRestaurants: RestaurantRepository,
     ) { }
 
 
@@ -168,16 +171,18 @@ export class RestaurantService {
 
     async allRestaurants({ page }: RestaurantsInput): Promise<RestaurantsOutput> {
         try {
-            const [restaurants, count] = await this.restaurants.findAndCount({
+
+            const [restaurants, totalResults] = await this.restaurants.findAndCount({
                 skip: (page - 1) * 25,
                 take: 25,
             });
-            console.log("restaurants", restaurants);
+            // const [restaurants, totalResults] = await this.pagedRestaurants.findPagedRestaurant(page);
+            // console.log(restaurants, totalResults);
             return {
                 ok: true,
                 results: restaurants,
-                totalPages: Math.ceil(count / 25),
-                totalResults: count,
+                totalPages: Math.ceil(totalResults / 25),
+                totalResults
             }
         } catch (error) {
             return {
@@ -212,10 +217,19 @@ export class RestaurantService {
         try {
             const [restaurants, totalResults] = await this.restaurants.findAndCount({
                 where: {
-                    name: Like(`%${query}$`),
-                }
-            });
+                    // name: Like(`%${query}%`),
+                    name: Raw(name => `${name} ILIKE '%${query}%'`),
 
+                },
+                skip: (page - 1) * 25,
+                take: 25,
+            });
+            return {
+                ok: true,
+                restaurants,
+                totalResults,
+                totalPages: Math.ceil(totalResults / 25),
+            }
         } catch (error) {
             return {
                 ok: false,
