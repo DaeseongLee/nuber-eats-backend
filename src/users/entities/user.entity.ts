@@ -5,6 +5,7 @@ import { CoreEntity } from "src/common/entities/core.entity";
 import { Column, Entity, BeforeInsert, BeforeUpdate, OneToMany } from "typeorm";
 import * as bcrypt from "bcrypt";
 import { IsBoolean, IsEmail, IsEnum, IsString } from 'class-validator';
+import { Order } from 'src/order/entities/order.entity';
 export enum UserRole {
     Client = 'Client',
     Owner = 'Owner',
@@ -43,6 +44,21 @@ export class User extends CoreEntity {
         restaurant => restaurant.owner,
     )
     restaurants: Restaurant[];
+
+    @Field(type => [Order])
+    @OneToMany(
+        type => Order,
+        order => order.customer
+    )
+    orders: Order[];
+
+
+    @Field(type => [Order])
+    @OneToMany(
+        type => Order,
+        order => order.driver
+    )
+    rides: Order[];
 
     @BeforeInsert()
     @BeforeUpdate()

@@ -5,6 +5,7 @@ import { CoreEntity } from './../../common/entities/core.entity';
 import { Field, ObjectType, InputType } from "@nestjs/graphql";
 import { IsString, Length } from "class-validator";
 import { Column, Entity, ManyToOne, OneToMany, RelationId } from "typeorm";
+import { Order } from 'src/order/entities/order.entity';
 
 @InputType('RestaurantInputType', { isAbstract: true })
 @ObjectType() //graphQL decorator
@@ -50,5 +51,12 @@ export class Restaurant extends CoreEntity {
         dish => dish.restaurant,
     )
     menu: Dish[];
+
+    @Field(type => [Order])
+    @OneToMany(
+        type => Order,
+        order => order.restaurant,
+    )
+    orders: Order[];
 
 }
