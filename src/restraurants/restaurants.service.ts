@@ -1,3 +1,4 @@
+import { CreateDishInput, CreateDishOutput } from './dtos/create-dish.dto';
 import { SearchRestaurantInput, SearchRestaurantOutput } from './dtos/search-restaurant.dto';
 import { DeleteRestaurantInput, DeleteRestaurantOutput } from './dtos/delete-restaurant.dto';
 import { CategoryRepository } from './repositories/category.repository';
@@ -194,7 +195,9 @@ export class RestaurantService {
 
     async findRestaurantById({ restaurantId }: RestaurantInput): Promise<RestaurantOutput> {
         try {
-            const restaurant = await this.restaurants.findOne(restaurantId);
+            const restaurant = await this.restaurants.findOne(restaurantId, {
+                relations: ['menu'],
+            });
             if (!restaurant) {
                 return {
                     ok: false,
@@ -235,6 +238,12 @@ export class RestaurantService {
                 ok: false,
                 error: 'Could not search for restaurants',
             }
+        }
+    }
+
+    async createDish(owner: User, createDishInput: CreateDishInput): Promise<CreateDishOutput> {
+        return {
+            ok: false,
         }
     }
 }
