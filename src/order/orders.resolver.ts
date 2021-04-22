@@ -1,4 +1,4 @@
-import { NEW_PENDING_ORDER, PUB_SUB } from './../common/common.constant';
+import { NEW_PENDING_ORDER, PUB_SUB, NEW_COOKED_ORDER } from './../common/common.constant';
 import { AuthUser } from './../auth/auth-user.decorator';
 import { User } from 'src/users/entities/user.entity';
 import { CreateOrderInput, CreateOrderOutput } from './dtos/create-order.dto';
@@ -63,6 +63,12 @@ export class OrderResolver {
     @Role(['Owner'])
     pendingOrders() {
         return this.pubSub.asyncIterator(NEW_PENDING_ORDER)
+    }
+
+    @Subscription(returns => Order)
+    @Role(['Delivery'])
+    cookedOrders() {
+        return this.pubSub.asyncIterator(NEW_COOKED_ORDER);
     }
 
 }

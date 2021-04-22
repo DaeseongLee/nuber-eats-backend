@@ -12,7 +12,7 @@ import { Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { CreateOrderInput, CreateOrderOutput } from './dtos/create-order.dto';
 import { GetOrderInput, GetOrderOutput } from './dtos/get-order.dto';
-import { NEW_PENDING_ORDER, PUB_SUB } from 'src/common/common.constant';
+import { NEW_COOKED_ORDER, NEW_PENDING_ORDER, PUB_SUB } from 'src/common/common.constant';
 
 
 @Injectable()
@@ -229,6 +229,15 @@ export class OrderService {
                     status
                 },
             ]);
+            console.log("여기  안들어오나11111111?????")
+            if (user.role === UserRole.Owner) {
+                if (status === OrderStatus.Cooked) {
+                    console.log("여기  안들어오나?????")
+                    await this.pubSub.publish(NEW_COOKED_ORDER, {
+                        cookedOrders: { ...order, status },
+                    });
+                }
+            }
             return {
                 ok: true,
             };
