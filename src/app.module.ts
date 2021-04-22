@@ -1,3 +1,4 @@
+import { CommonModule } from './common/common.module';
 import { OrderItem } from './order/entities/order-item.entity';
 import { Dish } from './restraurants/entities/dish.entity';
 import { AuthModule } from './auth/auth.module';
@@ -5,7 +6,7 @@ import { RestaurantsModule } from './restraurants/restraunt.module';
 import { Category } from './restraurants/entities/category.entity';
 import { Restaurant } from './restraurants/entities/restaurant.entity';
 import { Verification } from './users/entities/verification.entity';
-import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -13,7 +14,6 @@ import * as Joi from 'joi';
 import { UsersModule } from './users/users.module';
 import { User } from './users/entities/user.entity';
 import { JwtModule } from './jwt/jwt.module';
-import { jwtMiddleware } from './jwt/jwt.middleware';
 import { MailModule } from './mail/mail.module';
 import { OrderModule } from './order/order.module';
 import { Order } from './order/entities/order.entity';
@@ -76,6 +76,7 @@ import { Order } from './order/entities/order.entity';
     UsersModule,
     RestaurantsModule,
     OrderModule,
+    CommonModule,
   ],
   controllers: [],
   providers: [],
