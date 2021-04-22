@@ -1,4 +1,4 @@
-import { PUB_SUB } from './../common/common.constant';
+import { NEW_PENDING_ORDER, PUB_SUB } from './../common/common.constant';
 import { AuthUser } from './../auth/auth-user.decorator';
 import { User } from 'src/users/entities/user.entity';
 import { CreateOrderInput, CreateOrderOutput } from './dtos/create-order.dto';
@@ -45,19 +45,24 @@ export class OrderResolver {
     }
 
     @Mutation(returns => Boolean)
-    potatoReady() {
-        this.pubSub.publish('hotPotatos', {
-            readyPotato: 'YOur potato is ready. love you.',
+    async potatoReady(@Args('potatoId') potatoId: number) {
+        await this.pubSub.publish('hotPotatos', {
+            readyPotato: potatoId,
         });
         return true;
     }
 
-    @Subscription(returns => String)
-    @Role(['Any'])
-    readyPotato(@AuthUser() user: User) {
-        console.log(user);
-        return this.pubSub.asyncIterator('hotPotatos');
-    }
 
+    @Subscription(returns => Order, {
+
+        filter: ({ pendingOrders: { ownerId } }, _, { user }) => {
+            return ownerId === user.id;
+        },
+        resolve: ({ pendingOrders: { order } }) => order,
+    })
+    @Role(['Owner'])
+    pendingOrders() {
+        return this.pubSub.asyncIterator(NEW_PENDING_ORDER)
+    }
 
 }
