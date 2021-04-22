@@ -1,4 +1,5 @@
-import { NEW_PENDING_ORDER, PUB_SUB, NEW_COOKED_ORDER } from './../common/common.constant';
+import { OrderUpdatesInput } from './dtos/order-updates.dto';
+import { NEW_PENDING_ORDER, PUB_SUB, NEW_COOKED_ORDER, NEW_ORDER_UPDATE } from './../common/common.constant';
 import { AuthUser } from './../auth/auth-user.decorator';
 import { User } from 'src/users/entities/user.entity';
 import { CreateOrderInput, CreateOrderOutput } from './dtos/create-order.dto';
@@ -69,6 +70,27 @@ export class OrderResolver {
     @Role(['Delivery'])
     cookedOrders() {
         return this.pubSub.asyncIterator(NEW_COOKED_ORDER);
+    }
+
+    @Subscription(returns => Order, {
+        filter: (
+            { orderUpdates: order }: { orderUpdates: Order },
+            { input }: { input: OrderUpdatesInput },
+            { user }: { user: User },
+        ) => {
+            if (
+                order.driverId !== user.id &&
+                order.customerId !== user.id &&
+                order.restaurant.ownerId !== user.id
+            ) {
+                return false;
+            }
+            return order.id === input.id;
+        },
+    })
+    @Role(['Any'])
+    orderUpdates(@Args('input') orderUpdatesInput: OrderUpdatesInput) {
+        return this.pubSub.asyncIterator(NEW_ORDER_UPDATE);
     }
 
 }
