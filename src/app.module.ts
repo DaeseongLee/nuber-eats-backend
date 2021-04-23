@@ -17,6 +17,8 @@ import { JwtModule } from './jwt/jwt.module';
 import { MailModule } from './mail/mail.module';
 import { OrderModule } from './order/order.module';
 import { Order } from './order/entities/order.entity';
+import { PaymentsModule } from './payments/payments.module';
+import { Payment } from './payments/entities/payment.entity';
 
 
 
@@ -51,7 +53,7 @@ import { Order } from './order/entities/order.entity';
       database: process.env.DB_NAME,
       synchronize: process.env.NODE_ENV !== 'prod',
       logging: process.env.NODE_ENV !== 'prod' && process.env.NODE_ENV !== 'test',
-      entities: [User, Verification, Restaurant, Category, Dish, Order, OrderItem],
+      entities: [User, Verification, Restaurant, Category, Dish, Order, OrderItem, Payment],
     }),
     GraphQLModule.forRoot({
       installSubscriptionHandlers: true,
@@ -77,6 +79,7 @@ import { Order } from './order/entities/order.entity';
     RestaurantsModule,
     OrderModule,
     CommonModule,
+    PaymentsModule,
   ],
   controllers: [],
   providers: [],

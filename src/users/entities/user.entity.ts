@@ -1,3 +1,4 @@
+import { Payment } from './../../payments/entities/payment.entity';
 import { Restaurant } from './../../restraurants/entities/restaurant.entity';
 import { InternalServerErrorException } from '@nestjs/common';
 import { Field, InputType, ObjectType, registerEnumType } from '@nestjs/graphql';
@@ -52,6 +53,12 @@ export class User extends CoreEntity {
     )
     orders: Order[];
 
+    @Field(type => [Payment])
+    @OneToMany(
+        type => Payment,
+        payment => payment.user,
+    )
+    payments: Payment[];
 
     @Field(type => [Order])
     @OneToMany(
@@ -59,6 +66,7 @@ export class User extends CoreEntity {
         order => order.driver
     )
     rides: Order[];
+
 
     @BeforeInsert()
     @BeforeUpdate()

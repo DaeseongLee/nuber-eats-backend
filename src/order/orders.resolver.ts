@@ -98,7 +98,8 @@ export class OrderResolver {
     @Role(['Delivery'])
     takeOrder(
         @AuthUser() driver: User,
-        @Args('input') takeOrderInput: TakeOrderInput): Promise<TakeOrderOutput> {
+        @Args('input') takeOrderInput: TakeOrderInput,
+    ): Promise<TakeOrderOutput> {
         return this.orderService.takeOrder(driver, takeOrderInput);
     }
 }
