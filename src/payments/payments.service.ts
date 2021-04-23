@@ -3,9 +3,10 @@ import { Restaurant } from './../restraurants/entities/restaurant.entity';
 import { Payment } from './entities/payment.entity';
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { LessThan, Repository } from "typeorm";
 import { CreatePaymentInput, CreatePaymentOutput } from './dtos/create-payment.dto';
 import { GetPaymentsOutput } from './dtos/get-payments.dto';
+import { Interval } from '@nestjs/schedule';
 
 @Injectable()
 export class PaymentService {
@@ -64,5 +65,21 @@ export class PaymentService {
                 error: 'Could not load payments.',
             };
         }
+    }
+
+    @Interval(2000)
+    async checkPromotedRestaurants() {
+        const restaurants = await this.restaurants.find({
+            where: {
+                isPromoted: true,
+                promotedUntil: LessThan(new Date()),
+            }
+        });
+
+        restaurants.forEach(async restaurant => {
+            restaurant.isPromoted = false;
+            restaurant.promotedUntil = null;
+            await this.restaurants.save(restaurant);
+        });
     }
 }
