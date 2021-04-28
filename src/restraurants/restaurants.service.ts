@@ -168,7 +168,8 @@ export class RestaurantService {
                 ok: true,
                 category,
                 restaurants,
-                totalPages: Math.ceil(totalResults / 3)
+                totalPages: Math.ceil(totalResults / 3),
+                totalResults,
             };
         } catch (error) {
             return {
@@ -238,6 +239,7 @@ export class RestaurantService {
                 skip: (page - 1) * 3,
                 take: 3,
             });
+
             return {
                 ok: true,
                 restaurants,
