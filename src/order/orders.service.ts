@@ -37,7 +37,7 @@ export class OrderService {
 
             let orderFinalPrice = 0;
             const orderItems: OrderItem[] = [];
-
+            console.log("items~~~~~!!", items);
             for (const item of items) {  //forEach안에서는 return이 작동안함/
                 const dish = await this.dishies.findOne(item.dishId);
                 if (!dish) {
@@ -46,17 +46,22 @@ export class OrderService {
                         error: 'Dish not found',
                     }
                 };
-
+                console.log("dish~~~", dish)
                 let dishFinalPrice = dish.price;
                 for (const itemOption of item.options) {
+                    console.log("itemOption~~~", itemOption);
+
                     const dishOption = dish.options.find(
                         dishOption => dishOption.name === itemOption.name,
                     );
+                    console.log("dishOption~~~", dishOption);
                     if (dishOption) {
+                        console.log(dishOption.extra);
+
                         if (dishOption.extra) {
                             dishFinalPrice = dishFinalPrice + dishOption.extra;
                         } else {
-                            const dishOptionChoice = dishOption.choices.find(
+                            const dishOptionChoice = dishOption.choices?.find(
                                 optionChoice => optionChoice.name === itemOption.choice,
                             );
 
@@ -76,23 +81,25 @@ export class OrderService {
                     })
                 );
                 orderItems.push(orderItem);
-                const order = await this.orders.save(
-                    this.orders.create({
-                        customer,
-                        restaurant,
-                        total: orderFinalPrice,
-                        items: orderItems,
-                    })
-                );
-                await this.pubSub.publish(NEW_PENDING_ORDER,
-                    {
-                        pendingOrders: { order, ownerId: restaurant.ownerId }
-                    }
-                );
-                return {
-                    ok: true,
-                };
             }
+            const order = await this.orders.save(
+                this.orders.create({
+                    customer,
+                    restaurant,
+                    total: orderFinalPrice,
+                    items: orderItems,
+                })
+            );
+            await this.pubSub.publish(NEW_PENDING_ORDER,
+                {
+                    pendingOrders: { order, ownerId: restaurant.ownerId }
+                }
+            );
+            return {
+                ok: true,
+                orderId: order.id,
+            };
+
         } catch (error) {
             return {
                 ok: false,
