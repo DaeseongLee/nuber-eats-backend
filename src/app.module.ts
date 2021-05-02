@@ -29,10 +29,10 @@ import { UploadsModule } from './uploads/uploads.module';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: process.env.NODE_ENV === 'dev' ? '.env.dev' : '.env.test',
-      ignoreEnvFile: process.env.NODE_ENV === 'prod', //배포할때는 환경변수파일 무시하겠다.
+      ignoreEnvFile: process.env.NODE_ENV === 'production', //배포할때는 환경변수파일 무시하겠다.
       validationSchema: Joi.object({
         NODE_ENV: Joi.string()
-          .valid('dev', 'prod', 'test')
+          .valid('dev', 'production', 'test')
           .required(),
         DB_HOST: Joi.string().required(),
         DB_PORT: Joi.string().required(),
