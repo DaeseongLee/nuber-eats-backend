@@ -58,6 +58,7 @@ import { UploadsModule } from './uploads/uploads.module';
           database: process.env.DB_NAME,
         }),
       synchronize: process.env.NODE_ENV !== 'prod',
+      ssl: { rejectUnauthorized: false },
       logging: process.env.NODE_ENV !== 'prod' && process.env.NODE_ENV !== 'test',
       entities: [User, Verification, Restaurant, Category, Dish, Order, OrderItem, Payment],
     }),
