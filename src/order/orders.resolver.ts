@@ -56,7 +56,6 @@ export class OrderResolver {
 
 
     @Subscription(returns => Order, {
-
         filter: ({ pendingOrders: { ownerId } }, _, { user }) => {
             return ownerId === user.id;
         },
@@ -64,7 +63,7 @@ export class OrderResolver {
     })
     @Role(['Owner'])
     pendingOrders() {
-        return this.pubSub.asyncIterator(NEW_PENDING_ORDER)
+        return this.pubSub.asyncIterator(NEW_PENDING_ORDER);
     }
 
     @Subscription(returns => Order)
