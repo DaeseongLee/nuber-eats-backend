@@ -90,6 +90,7 @@ export class OrderService {
                     items: orderItems,
                 })
             );
+
             await this.pubSub.publish(NEW_PENDING_ORDER,
                 {
                     pendingOrders: { order, ownerId: restaurant.ownerId }
@@ -101,6 +102,7 @@ export class OrderService {
             };
 
         } catch (error) {
+            console.error(error);
             return {
                 ok: false,
                 error: 'Could not create order',

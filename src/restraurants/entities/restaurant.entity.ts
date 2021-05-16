@@ -17,10 +17,10 @@ export class Restaurant extends CoreEntity {
     @Length(5)
     name: string;
 
-    @Field(type => String)
-    @Column()
+    @Field(type => String, { nullable: true })
+    @Column({ nullable: true })
     @IsString()
-    coverImg: string;
+    coverImg?: string;
 
     @Field(type => String)
     @Column()
@@ -59,12 +59,12 @@ export class Restaurant extends CoreEntity {
     )
     orders: Order[];
 
-    @Field(type => Boolean)
-    @Column({ default: false })
-    isPromoted: boolean;
+    @Field(type => Boolean, { nullable: true })
+    @Column({ nullable: true })
+    isPromoted?: boolean;
 
     @Field(type => Date, { nullable: true })
     @Column({ nullable: true })
-    promotedUntil: Date;
+    promotedUntil?: Date;
 
 }

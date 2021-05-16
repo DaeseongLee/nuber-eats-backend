@@ -43,6 +43,8 @@ import { UploadsModule } from './uploads/uploads.module';
         MAILGUN_API_KEY: Joi.string().required(),
         MAILGUN_DOMAIN_NAME: Joi.string().required(),
         MAILGUN_FROM_EMAIL: Joi.string().required(),
+        AWS_KEY: Joi.string().required(),
+        AWS_SECRET_KEY: Joi.string().required(),
       })
 
     }),
@@ -58,7 +60,7 @@ import { UploadsModule } from './uploads/uploads.module';
           database: process.env.DB_NAME,
         }),
       synchronize: process.env.NODE_ENV !== 'prod',
-      ssl: { rejectUnauthorized: false },
+      // ssl: { rejectUnauthorized: false },
       logging: process.env.NODE_ENV !== 'prod' && process.env.NODE_ENV !== 'test',
       entities: [User, Verification, Restaurant, Category, Dish, Order, OrderItem, Payment],
     }),

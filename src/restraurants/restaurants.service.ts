@@ -192,8 +192,7 @@ export class RestaurantService {
                     isPromoted: 'DESC',
                 },
             });
-            // const [restaurants, totalResults] = await this.pagedRestaurants.findPagedRestaurant(page);
-            // console.log(restaurants, totalResults);
+
             return {
                 ok: true,
                 results: restaurants,

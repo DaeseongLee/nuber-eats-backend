@@ -2,8 +2,6 @@ import { Controller, Post, UploadedFile, UseInterceptors } from "@nestjs/common"
 import { FileInterceptor } from "@nestjs/platform-express";
 import * as AWS from "aws-sdk";
 
-//AKIAQYUS2O7OSS34AQDO
-//hqIkMUr9SQcDyg5iLQWPkL/3B/MgP7vbx4Z+45A7
 const BUCKET_NAME = "kingstartnubereats745";
 
 @Controller('uploads')
@@ -13,8 +11,8 @@ export class UploadsController {
     async UploadedFile(@UploadedFile() file) {
         AWS.config.update({
             credentials: {
-                accessKeyId: 'AKIAQYUS2O7OSS34AQDO',
-                secretAccessKey: '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',
+                accessKeyId: process.env.AWS_KEY,
+                secretAccessKey: process.env.AWS_SECRET_KEY,
             }
         });
         try {
